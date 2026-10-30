@@ -7,6 +7,13 @@ let countdown;
 let confettiCleanup;
 let timeRemaining = 30;
 let score = 0;
+const milestoneMessages = [
+  { score: 5, message: "Great start! Keep it up!" },
+  { score: 10, message: "Halfway there!" },
+  { score: 15, message: "You're so close!" },
+  { score: 20, message: "Goal reached! Amazing work!" },
+];
+const reachedMilestones = new Set();
 const winningMessages = [
   "Amazing catch! You won!",
   "Great job! You reached the goal!",
@@ -20,6 +27,7 @@ const losingMessages = [
 const scoreDisplay = document.getElementById("score");
 const timeDisplay = document.getElementById("time");
 const gameResult = document.getElementById("game-result");
+const milestoneDisplay = document.getElementById("milestone-message");
 const gameContainer = document.getElementById("game-container");
 const bucket = document.getElementById("bucket");
 const difficultySelect = document.getElementById("difficulty");
@@ -54,9 +62,12 @@ function startGame() {
   gameRunning = true;
   score = 0;
   timeRemaining = 30;
+  reachedMilestones.clear();
   scoreDisplay.textContent = score;
   timeDisplay.textContent = timeRemaining;
   gameResult.hidden = true;
+  milestoneDisplay.hidden = true;
+  milestoneDisplay.textContent = "";
   currentDifficulty = difficultySettings[difficultySelect.value];
   difficultySelect.disabled = true;
 
@@ -80,6 +91,7 @@ function endGame() {
   clearInterval(catchChecker);
   clearInterval(countdown);
   difficultySelect.disabled = false;
+  milestoneDisplay.hidden = true;
   gameContainer.querySelectorAll(".water-drop, .plastic-bottle").forEach((item) => item.remove());
 
   const messages = score >= 20 ? winningMessages : losingMessages;
@@ -100,13 +112,16 @@ function resetGame() {
   clearInterval(catchChecker);
   clearInterval(countdown);
   difficultySelect.disabled = false;
+  milestoneDisplay.hidden = true;
   gameContainer.querySelectorAll(".water-drop, .plastic-bottle").forEach((item) => item.remove());
 
   score = 0;
   timeRemaining = 30;
+  reachedMilestones.clear();
   scoreDisplay.textContent = score;
   timeDisplay.textContent = timeRemaining;
   gameResult.hidden = true;
+  milestoneDisplay.textContent = "";
   bucket.style.left = "calc(50% - 45px)";
 }
 
@@ -210,10 +225,21 @@ function checkForCaughtDrops() {
 
     if (touchesBucket) {
       item.dataset.caught = "true";
-      score = item.classList.contains("plastic-bottle")
+      const caughtBottle = item.classList.contains("plastic-bottle");
+      score = caughtBottle
         ? Math.max(0, score - 1)
         : score + 1;
       scoreDisplay.textContent = score;
+
+      if (!caughtBottle) {
+        const milestone = milestoneMessages.find((entry) => entry.score === score);
+        if (milestone && !reachedMilestones.has(milestone.score)) {
+          reachedMilestones.add(milestone.score);
+          milestoneDisplay.textContent = milestone.message;
+          milestoneDisplay.hidden = false;
+        }
+      }
+
       item.remove();
     }
   });

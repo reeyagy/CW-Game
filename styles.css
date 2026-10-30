@@ -109,6 +109,17 @@ body {
     background-color: #FFF2BF;
 }
 
+.milestone-message {
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background-color: #DFF3E4;
+    color: #145A32;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
 .confetti-overlay {
     position: fixed;
     inset: 0;
