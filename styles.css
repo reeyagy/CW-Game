@@ -38,7 +38,7 @@ body {
     padding: 24px 16px;
     background-color: #FFFDF5;
     color: var(--brand-ink);
-    font-family: Avenir, "Avenir Next", Arial, sans-serif;
+    font-family: "Proxima Nova", Avenir, "Avenir Next", Lato, sans-serif;
 }
 
 .game-wrapper {
@@ -73,6 +73,31 @@ body {
     flex: 0 1 auto;
     font-size: 24px;
     font-weight: bold;
+}
+
+.difficulty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+#difficulty {
+    padding: 9px 10px;
+    color: var(--brand-ink);
+    border: 1px solid #8B8B8B;
+    border-radius: 6px;
+    background-color: #fff;
+    font: inherit;
+}
+
+#difficulty:focus-visible {
+    outline: 3px solid var(--brand-blue);
+    outline-offset: 3px;
+}
+
+#difficulty:disabled {
+    opacity: 0.65;
 }
 
 #game-result {
@@ -117,6 +142,39 @@ body {
     touch-action: none;
 }
 
+.site-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    width: 100%;
+    padding: 18px 4px 4px;
+    border-top: 1px solid #D7D2C4;
+    color: #555;
+    font-size: 14px;
+}
+
+.site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+}
+
+.site-footer a {
+    color: #145A83;
+    font-weight: bold;
+    text-underline-offset: 3px;
+}
+
+.site-footer a:hover {
+    color: var(--brand-ink);
+}
+
+.site-footer a:focus-visible {
+    outline: 3px solid var(--brand-blue);
+    outline-offset: 3px;
+}
+
 #bucket {
     position: absolute;
     bottom: 12px;
@@ -134,6 +192,7 @@ body {
 #start-btn,
 #reset-btn {
     padding: 10px 18px;
+    font-family: inherit;
     color: var(--brand-ink);
     border: none;
     border-radius: 6px;
@@ -162,6 +221,18 @@ body {
 #reset-btn:focus-visible {
     outline: 3px solid var(--brand-blue);
     outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+    .score-panel {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .score {

@@ -22,6 +22,13 @@ const timeDisplay = document.getElementById("time");
 const gameResult = document.getElementById("game-result");
 const gameContainer = document.getElementById("game-container");
 const bucket = document.getElementById("bucket");
+const difficultySelect = document.getElementById("difficulty");
+const difficultySettings = {
+  easy: { dropInterval: 1400, bottleInterval: 3000, dropFallDuration: 5.6, bottleFallDuration: 6.3 },
+  normal: { dropInterval: 1000, bottleInterval: 2200, dropFallDuration: 4, bottleFallDuration: 4.5 },
+  hard: { dropInterval: 700, bottleInterval: 1500, dropFallDuration: 2.8, bottleFallDuration: 3.15 },
+};
+let currentDifficulty = difficultySettings[difficultySelect.value];
 let confettiOverlay;
 
 gameContainer.addEventListener("pointermove", (event) => {
@@ -50,10 +57,11 @@ function startGame() {
   scoreDisplay.textContent = score;
   timeDisplay.textContent = timeRemaining;
   gameResult.hidden = true;
+  currentDifficulty = difficultySettings[difficultySelect.value];
+  difficultySelect.disabled = true;
 
-  // Create new drops every second (1000 milliseconds)
-  dropMaker = setInterval(createDrop, 1000);
-  bottleMaker = setInterval(createBottle, 2200);
+  dropMaker = setInterval(createDrop, currentDifficulty.dropInterval);
+  bottleMaker = setInterval(createBottle, currentDifficulty.bottleInterval);
   catchChecker = setInterval(checkForCaughtDrops, 50);
   countdown = setInterval(() => {
     timeRemaining -= 1;
@@ -71,6 +79,7 @@ function endGame() {
   clearInterval(bottleMaker);
   clearInterval(catchChecker);
   clearInterval(countdown);
+  difficultySelect.disabled = false;
   gameContainer.querySelectorAll(".water-drop, .plastic-bottle").forEach((item) => item.remove());
 
   const messages = score >= 20 ? winningMessages : losingMessages;
@@ -90,6 +99,7 @@ function resetGame() {
   clearInterval(bottleMaker);
   clearInterval(catchChecker);
   clearInterval(countdown);
+  difficultySelect.disabled = false;
   gameContainer.querySelectorAll(".water-drop, .plastic-bottle").forEach((item) => item.remove());
 
   score = 0;
@@ -158,8 +168,7 @@ function createDrop() {
   const xPosition = Math.random() * (gameWidth - 60);
   drop.style.left = xPosition + "px";
 
-  // Make drops fall for 4 seconds
-  drop.style.animationDuration = "4s";
+  drop.style.animationDuration = `${currentDifficulty.dropFallDuration}s`;
 
   // Add the new drop to the game screen
   gameContainer.appendChild(drop);
@@ -178,7 +187,7 @@ function createBottle() {
   const gameWidth = gameContainer.clientWidth;
   const bottleWidth = 36;
   bottle.style.left = `${Math.random() * (gameWidth - bottleWidth)}px`;
-  bottle.style.animationDuration = "4.5s";
+  bottle.style.animationDuration = `${currentDifficulty.bottleFallDuration}s`;
 
   gameContainer.appendChild(bottle);
   bottle.addEventListener("animationend", () => bottle.remove());
